@@ -1,0 +1,3 @@
+[submodule "lib/ff-esp-arduino"]
+	path = lib/ff-esp-arduino
+	url = https://github.com/framefactory/ff-esp-arduino

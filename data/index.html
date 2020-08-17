@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, shrink-to-fit=no" />
+
+    <title>Bitmatrix</title>
+    <!-- <link rel="shortcut icon" type="image/png" href="favicon.png"> -->
+
+    <style>
+        button {
+            display: block;
+            background: cadetblue;
+            border: none;
+            width: 48px;
+            height: 48px;
+        }
+
+        button + button {
+            margin-left: 8px;
+        }
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+        .col {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <h1>ESP32 Bitmatrix</h1>
+    <h2>Brightness</h2>
+    <div class="row">    
+        <button id="btn-up">+</button>
+        <button id="btn-down">-</button>
+    </div>
+    <script>
+        async function post(url, data) {
+            return fetch(url, {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json);
+        }
+
+        const buttonUp = document.getElementById("btn-up");
+        buttonUp.addEventListener("click", event => {
+            post("/brightness/up");
+        });
+
+        const buttonDown = document.getElementById("btn-down");
+        buttonDown.addEventListener("click", event => {
+            post("/brightness/down");
+        });
+    </script>
+</body>
+</html>

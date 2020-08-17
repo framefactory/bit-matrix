@@ -1,0 +1,15 @@
+# FOLDERS
+node_modules/
+typings/
+.idea/
+.vscode/
+.vs/
+
+bin/
+build/
+vendor/
+
+# FILES
+*.log
+.DS_Store
+CMakeSettings.json

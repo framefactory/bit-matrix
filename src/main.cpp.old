@@ -1,0 +1,141 @@
+/**
+ * BitMatrix - Dot Matrix Display Controller
+ * Copyright 2020 Frame Factory GmbH, Ralph Wiedemeier
+ * License: MIT
+ */
+
+#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <stdlib.h>
+
+#include "../lib/BitMatrix/MAX7219Universe.h"
+#include "../lib/BitMatrix/MAX7219Chain.h"
+#include "../lib/BitMatrix/MAX7219Matrix.h"
+
+#include "../lib/BitMatrix/Canvas.h"
+#include "../lib/BitMatrix/Bitmap.h"
+#include "../lib/Net/DateTime.h"
+
+#include "fonts/data_dm8_c648.h"
+#include "fonts/data_dm8_04b24.h"
+
+#include "router.h"
+
+const int CLOCK_PIN = 23;
+const int LOAD_PIN = 22;
+const int DATA_PIN = 21;
+
+MAX7219Universe* pUniverse = nullptr;
+MAX7219Chain* pChain = nullptr;
+MAX7219Chain::matrixVec_t matrices;
+
+Canvas* pCanvas = nullptr;
+Bitmap* pFontC648 = nullptr;
+Bitmap* pFont04B24 = nullptr;
+
+DateTime realtime;
+WebServer webServer(80);
+
+const char* pSSID = "Fantastic Wireless";
+const char* pPass = "w!rele$$4ever";
+int wifiStatus = WL_IDLE_STATUS;
+
+void setup()
+{
+  // BitMatrix Universe
+  pUniverse = new MAX7219Universe(CLOCK_PIN, LOAD_PIN, 0);
+  pChain = pUniverse->createChain(DATA_PIN);
+  matrices = pChain->createMatrices(6);
+
+  pCanvas = new Canvas(48, 8);
+  pCanvas->addMatrices(matrices, 0, 0, 8, 0);
+
+  pFontC648 = new Bitmap(128, 182, data_dm8_c648);
+  pFont04B24 = new Bitmap(128, 182, data_dm8_04b24);
+
+  pUniverse->initialize();
+
+  pUniverse->setBrightness(5);
+  pCanvas->drawText("BITMATRIX", pFont04B24, 6, 0, 4);
+  pCanvas->update();
+  pUniverse->write();
+
+  // WIFI
+  Serial.begin(115200);
+
+  wifiStatus = WiFi.begin(pSSID, pPass);
+  Serial.printf("Attempting to connect to: %s\n", pSSID);
+
+  while (wifiStatus != WL_CONNECTED) {
+    Serial.print(".");
+    wifiStatus = WiFi.begin(pSSID, pPass);
+    delay(1000);
+  }
+
+  IPAddress ip = WiFi.localIP();
+  Serial.printf("IP Address: %s\n", ip.toString().c_str());
+
+  realtime.config(1, 1);
+
+  router::setup(webServer);
+  webServer.begin();
+}
+
+void loop()
+{
+  webServer.handleClient();
+  // WiFiClient client = server.available();
+  // if (client) {
+  //   Serial.println("new client.");
+  //   String currentLine = "";
+  //   while(client.connected()) {
+  //     if (client.available()) {
+  //       char c = client.read();
+  //       Serial.write(c);
+  //       header += c;
+  //       if (c == '\n') {
+  //         if (currentLine.length() == 0) {
+  //           client.println("<!DOCTYPE html><html>");
+  //           client.println("<head>");
+  //           client.println("</head>");
+  //           client.println("<body>");
+  //           client.println("<h1>ESP32 Webserver!</h1>");
+  //           client.println("</body>");
+  //           client.println("</html>");
+  //           client.println("");
+  //           client.stop();
+  //           Serial.println("client disconnected.");
+  //         }
+  //         else {
+  //           currentLine = "";
+  //         }
+  //       }
+  //       else if (c != '\r') {
+  //         currentLine += c;
+  //       }
+  //     }
+  //   }
+  // }
+
+  realtime.now();
+  char hrs[3], mins[3], secs[3];
+  realtime.toHourString(hrs);
+  realtime.toMinuteString(mins);
+  realtime.toSecondString(secs);
+  
+  pCanvas->clear();
+
+  pCanvas->set(14, 2);
+  pCanvas->set(14, 5);
+  pCanvas->set(32, 2);
+  pCanvas->set(32, 5);
+
+  pCanvas->drawText(hrs, pFontC648, -1, 0, 7, false);
+  pCanvas->drawText(mins, pFontC648, 16, 0, 7, false);
+  pCanvas->drawText(secs, pFontC648, 34, 0, 7, false);
+
+  pCanvas->update();
+  pUniverse->writeDisplay();  
+  delay(1000);
+}

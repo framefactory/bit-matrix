@@ -19,11 +19,12 @@ Application::Application() :
     _server(80),
     _universe(CLOCK_PIN, LOAD_PIN, DELAY),
     _matrices(_universe.createChain(DATA_PIN)->createMatrices(6)),
-    _canvas(48, 8)
+    _canvas(48, 8),
+    _comp(48, 8)
 {
     _canvas.addMatrices(_matrices, 0, 0, 8, 0);
-    _player.addEffect(new ff::Clock(&_canvas));
-    _player.addEffect(new ff::DrawTest(&_canvas));
+    _comp.addEffect(new ff::Clock(&_canvas));
+    _comp.addEffect(new ff::DrawTest(&_canvas));
 }
 
 void Application::setup()
@@ -42,19 +43,22 @@ void Application::setup()
     
     float offset = _env.getFloat("TIMEZONE_OFFSET");
     float dst = _env.getFloat("TIMEZONE_DST");
-    _player.fetchRealTime(offset, dst);
+    _comp.fetchRealTime(offset, dst);
     _server.initialize(&_universe);
 
-    //_player.startEffect(ff::Clock::name);
-    _player.startEffect(ff::DrawTest::name);
+    _comp.startEffect("Clock");
+    //_player.startEffect("DrawTest");
     _canvas.clear();
 }
 
 void Application::loop()
 {
+    static bool isOn = false;
     _server.handleClient();
 
-    if (_player.render()) {
+    if (_comp.render()) {
+        isOn = !isOn;
+        _canvas.set(0, 0, isOn);
         _canvas.update();
         _universe.writeDisplay();
         _canvas.clear();

@@ -14,7 +14,7 @@
 #include "matrix/MAX7219Chain.h"
 #include "matrix/MAX7219Matrix.h"
 #include "matrix/Canvas.h"
-#include "effect/Player.h"
+#include "effect/Composition.h"
 #include "core/Environment.h"
 
 F_BEGIN_NAMESPACE
@@ -25,7 +25,7 @@ private:
     static const int CLOCK_PIN = 23;
     static const int LOAD_PIN = 22;
     static const int DATA_PIN = 21;
-    static const int DELAY = 1;
+    static const int DELAY = 0;
 
 public:
     Application();
@@ -43,7 +43,7 @@ private:
     MAX7219Universe _universe;
     MAX7219Matrices _matrices;
     Canvas _canvas;
-    Player _player;
+    Composition _comp;
 };
 
 F_END_NAMESPACE

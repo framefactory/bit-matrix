@@ -23,8 +23,8 @@ Application::Application() :
     _comp(48, 8)
 {
     _canvas.addMatrices(_matrices, 0, 0, 8, 0);
-    _comp.addEffect(new ff::Clock(&_canvas));
-    _comp.addEffect(new ff::DrawTest(&_canvas));
+    _comp.addEffectLayer(new ff::Clock());
+    //_comp.addEffectLayer(new ff::DrawTest(), Bitmap::Xor);
 }
 
 void Application::setup()
@@ -33,6 +33,7 @@ void Application::setup()
     SPIFFS.begin(true);
     _env.read();
 
+    _universe.setBrightness(1);
     _universe.initialize();
 
     _canvas.drawText("BITMATRIX", &ff::Fonts::font04B24, 6, 0, 4);
@@ -46,8 +47,6 @@ void Application::setup()
     _comp.fetchRealTime(offset, dst);
     _server.initialize(&_universe);
 
-    _comp.startEffect("Clock");
-    //_player.startEffect("DrawTest");
     _canvas.clear();
 }
 
@@ -57,11 +56,13 @@ void Application::loop()
     _server.handleClient();
 
     if (_comp.render()) {
-        isOn = !isOn;
-        _canvas.set(0, 0, isOn);
+        _canvas.blit(_comp);
+
+        //isOn = !isOn;
+        //_canvas.set(0, 0, isOn);
+
         _canvas.update();
         _universe.writeDisplay();
-        _canvas.clear();
     }
 }
 

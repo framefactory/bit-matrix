@@ -16,16 +16,18 @@
 #include "matrix/Canvas.h"
 #include "effect/Composition.h"
 #include "core/Environment.h"
+#include "net/BLEMidi.h"
 
 F_BEGIN_NAMESPACE
 
 class Application
 {
 private:
-    static const int CLOCK_PIN = 23;
-    static const int LOAD_PIN = 22;
-    static const int DATA_PIN = 21;
-    static const int DELAY = 0;
+    static const int CLOCK_PIN;
+    static const int LOAD_PIN;
+    static const int DATA_PINS[8];
+    static const int DELAY;
+    static const int ROWS;
 
 public:
     Application();
@@ -39,9 +41,10 @@ private:
 
     Environment _env;
     ApiServer _server;
+    BLEMidi _midi;
 
     MAX7219Universe _universe;
-    MAX7219Matrices _matrices;
+    MAX7219Matrices _matrices[8];
     Canvas _canvas;
     Composition _comp;
 };

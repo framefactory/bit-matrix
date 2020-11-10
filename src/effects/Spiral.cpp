@@ -10,6 +10,6 @@ F_USE_NAMESPACE
 
 bool Spiral::onRender(const Timing& timing, Bitmap* pBitmap)
 {
-    int t = timing.seconds * 10.0;
+    //int t = timing.seconds * 10.0;
     return true;
 }

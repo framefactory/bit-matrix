@@ -5,11 +5,13 @@
  */
 
 #include "Application.h"
+#include "effects/Index.h"
+#include "effects/Lines.h"
 
-#include "effect/examples/Clock16.h"
-//#include "effect/examples/Clock22.h"
-#include "effect/examples/DrawTest.h"
 #include "fonts/Fonts.h"
+//#include "effect/examples/Clock16.h"
+//#include "effect/examples/Clock22.h"
+//#include "effect/examples/DrawTest.h"
 
 #include <WiFi.h>
 #include <SPIFFS.h>
@@ -18,9 +20,9 @@ F_USE_NAMESPACE
 
 const int Application::CLOCK_PIN = 4;
 const int Application::LOAD_PIN = 16;
-const int Application::DATA_PINS[] = { 17, 5, 18, 19, 0, 0, 0, 0 };
+const int Application::DATA_PINS[] = { 26, 25, 33, 32, 17, 5, 18, 19 };
 const int Application::DELAY = 1;
-const int Application::ROWS = 4;
+const int Application::ROWS = 8;
 
 Application::Application() :
     _server(80),
@@ -33,8 +35,8 @@ Application::Application() :
         _canvas.addMatrices(_matrices[row], 0, 8 * row, 8, 0);
     }
 
-    //_comp.addEffectLayer(new ff::Clock16());
-    //_comp.addEffectLayer(new ff::DrawTest(), Bitmap::Xor);
+    _comp.addEffectLayer(new ff::Index());
+    _comp.addEffectLayer(new ff::Lines());
 }
 
 void Application::setup()
@@ -46,14 +48,18 @@ void Application::setup()
 
     _universe.setClockPinInverted(true);
     _universe.setLoadPinInverted(true);
-    _universe.setBrightness(8);
+    _universe.setBrightness(1);
     _universe.initialize();
 
 
-    _canvas.drawText("WELCOME!", &ff::Fonts::fontC64, 0, 0);
-    _canvas.drawText("THIS IS:", &ff::Fonts::fontC64, 0, 8);
-    _canvas.drawText("BIT-----", &ff::Fonts::fontC64, 0, 16);
-    _canvas.drawText("MATRIXXX", &ff::Fonts::fontC64, 0, 24);
+    _canvas.drawText("BIT     ", &ff::Fonts::fontC64, 0, 0);
+    _canvas.drawText("MATRIX  ", &ff::Fonts::fontC64, 0, 8);
+    _canvas.drawText("VERSION ", &ff::Fonts::fontC64, 0, 16);
+    _canvas.drawText("1.0     ", &ff::Fonts::fontC64, 0, 24);
+    _canvas.drawText("        ", &ff::Fonts::fontC64, 0, 32);
+    _canvas.drawText("BY      ", &ff::Fonts::fontC64, 0, 40);
+    _canvas.drawText("FRAME   ", &ff::Fonts::fontC64, 0, 48);
+    _canvas.drawText("FACTORY ", &ff::Fonts::fontC64, 0, 56);
     _canvas.update();
     _universe.writeDisplay();
 
@@ -67,6 +73,7 @@ void Application::setup()
 
     delay(2000);
     _canvas.clear();
+    _universe.initialize();
 }
 
 void Application::loop()
@@ -74,29 +81,28 @@ void Application::loop()
     static bool isOn = false;
     //_server.handleClient();
 
-    _canvas.clear();
-    _canvas.drawText("0001020304050607", &ff::Fonts::font04B24, 0, 0, 4);
-    _canvas.drawText("0809101112131415", &ff::Fonts::font04B24, 0, 8, 4);
-    _canvas.drawText("1617181920212223", &ff::Fonts::font04B24, 0, 16, 4);
-    _canvas.drawText("2425262728293031", &ff::Fonts::font04B24, 0, 24, 4);
+    // handle MIDI messages
+    while(!_midi.empty()) {
+        MidiMessage message = _midi.popMessage();
+        if (message.status() == MidiStatus::ControlChange && message.controller() == 7) {
+            _universe.setBrightness(message.value() / 16);
+            _universe.writeBrightness();
+        }
+
+        Serial.println(message.toString().c_str());
+    }
 
     if (_comp.render()) {
         _canvas.blit(_comp);
 
-        //isOn = !isOn;
-        //_canvas.set(0, 0, isOn);
+        isOn = !isOn;
+        _canvas.set(0, 0, isOn);
 
-        //_canvas.update();
-        //_universe.writeDisplay();
+        _canvas.update();
+        _universe.writeDisplay();
     }
 
-    isOn = !isOn;
-    _canvas.set(0, 0, isOn);
-
-    _canvas.update();
-    _universe.writeDisplay();
-
-    delay(10);
+    delay(1);
 }
 
 void Application::_connectWifi()
@@ -115,11 +121,6 @@ void Application::_connectWifi()
 
     Serial.printf("Connecting to WiFi, SSID: %s ", ssid);
     int wifiStatus = WiFi.begin(ssid, password);
-
-    //int16_t count = WiFi.scanNetworks();
-    //for (int16_t i = 0; i < count; ++i) {
-    //    Serial.printf("%d: %s, Ch:%d (%ddBm) %d\n", i + 1, WiFi.SSID(i).c_str(), WiFi.channel(i), WiFi.RSSI(i), WiFi.encryptionType(i));
-    //}
 
     while (wifiStatus != WL_CONNECTED) {
         delay(500);

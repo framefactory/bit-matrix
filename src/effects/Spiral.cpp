@@ -8,8 +8,6 @@
 
 F_USE_NAMESPACE
 
-bool Spiral::onRender(const Timing& timing, Bitmap* pBitmap)
+void Spiral::onRender(Bitmap* pBitmap, const Timing& timing)
 {
-    //int t = timing.seconds * 10.0;
-    return true;
 }

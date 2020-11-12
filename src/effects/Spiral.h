@@ -8,15 +8,14 @@
 #define _ESP_BITMATRIX_SPIRAL_H
 
 #include "app.h"
-
-#include "../../lib/ff-esp-arduino/effect/Effect.h"
+#include "effect/Effect.h"
 
 F_BEGIN_NAMESPACE
 
 class Spiral : public Effect
 {
 public:
-    virtual bool onRender(const Timing& timing, Bitmap* pBitmap);
+    void onRender(Bitmap* pBitmap, const Timing& timing);
 
 private:
 };

@@ -9,12 +9,12 @@
 
 F_USE_NAMESPACE
 
-bool Lines::onRender(const Timing& timing, Bitmap* pBitmap)
+void Lines::onRender(Bitmap* pBitmap, const Timing& timing)
 {
     int w = pBitmap->width();
     int h = pBitmap->height();
 
-    double f = fmod(timing.seconds * 0.5, 2.0);
+    double f = fmod(timing.seconds * 0.25, 2.0);
     
     if (f < 1.0) {
         pBitmap->line(0, f * h, w, f * h);
@@ -23,6 +23,4 @@ bool Lines::onRender(const Timing& timing, Bitmap* pBitmap)
         f = f - 1.0;
         pBitmap->line(f * w, 0, f * w, h);
     }
-
-    return true;
 }

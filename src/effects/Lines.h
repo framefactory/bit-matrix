@@ -8,17 +8,14 @@
 #define _ESP_BITMATRIX_LINES_H
 
 #include "app.h"
-
-#include "../../lib/ff-esp-arduino/effect/Effect.h"
+#include "effect/Effect.h"
 
 F_BEGIN_NAMESPACE
 
 class Lines : public Effect
 {
 public:
-    virtual bool onRender(const Timing& timing, Bitmap* pBitmap);
-
-private:
+    void onRender(Bitmap* pBitmap, const Timing& timing) override;
 };
 
 F_END_NAMESPACE

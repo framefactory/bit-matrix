@@ -9,12 +9,16 @@
 
 #include "app.h"
 #include "ApiServer.h"
+#include "MatrixPlayer.h"
 
 #include "matrix/MAX7219Universe.h"
 #include "matrix/MAX7219Chain.h"
 #include "matrix/MAX7219Matrix.h"
-#include "matrix/Canvas.h"
-#include "effect/Composition.h"
+#include "matrix/MAX7219Canvas.h"
+
+#include "effects/Index.h"
+#include "effects/Lines.h"
+
 #include "core/Environment.h"
 #include "net/BLEMidi.h"
 
@@ -41,12 +45,16 @@ private:
 
     Environment _env;
     ApiServer _server;
-    BLEMidi _midi;
+    BLEMidi _midiPort;
 
     MAX7219Universe _universe;
     MAX7219Matrices _matrices[8];
-    Canvas _canvas;
-    Composition _comp;
+    MAX7219Canvas _canvas;
+
+    MatrixPlayer* _pPlayer;
+
+    //Index _indexEffect;
+    //Lines _linesEffect;
 };
 
 F_END_NAMESPACE

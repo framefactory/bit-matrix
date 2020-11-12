@@ -4,7 +4,6 @@
  * License: MIT
  */
 
-#include <Arduino.h>
 #include "Application.h"
 
 ff::Application app;

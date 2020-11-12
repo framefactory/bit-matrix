@@ -8,17 +8,21 @@
 #define _ESP_BITMATRIX_INDEX_H
 
 #include "app.h"
-
-#include "../../lib/ff-esp-arduino/effect/Effect.h"
+#include "effect/Effect.h"
 
 F_BEGIN_NAMESPACE
 
 class Index : public Effect
 {
 public:
-    virtual bool onRender(const Timing& timing, Bitmap* pBitmap);
+    Index(int offsetX = 0, int offsetY = 0, int strideX = 8, int strideY = 8);
+    void onRender(Bitmap* pBitmap, const Timing& timing) override;
 
 private:
+    int _offsetX;
+    int _offsetY;
+    int _strideX;
+    int _strideY;
 };
 
 F_END_NAMESPACE

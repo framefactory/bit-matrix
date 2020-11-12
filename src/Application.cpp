@@ -5,13 +5,7 @@
  */
 
 #include "Application.h"
-#include "effects/Index.h"
-#include "effects/Lines.h"
-
 #include "fonts/Fonts.h"
-//#include "effect/examples/Clock16.h"
-//#include "effect/examples/Clock22.h"
-//#include "effect/examples/DrawTest.h"
 
 #include <WiFi.h>
 #include <SPIFFS.h>
@@ -27,16 +21,8 @@ const int Application::ROWS = 8;
 Application::Application() :
     _server(80),
     _universe(CLOCK_PIN, LOAD_PIN, DELAY),
-    _canvas(64, 64),
-    _comp(64, 64)
+    _canvas(64, 64)
 {
-    for (size_t row = 0; row < ROWS; ++row) {
-        _matrices[row] = _universe.createChain(DATA_PINS[row])->createMatrices(8);
-        _canvas.addMatrices(_matrices[row], 0, 8 * row, 8, 0);
-    }
-
-    _comp.addEffectLayer(new ff::Index());
-    _comp.addEffectLayer(new ff::Lines());
 }
 
 void Application::setup()
@@ -46,25 +32,30 @@ void Application::setup()
 
     _env.read();
 
+    for (size_t row = 0; row < ROWS; ++row) {
+        _matrices[row] = _universe.createChain(DATA_PINS[row])->createMatrices(8);
+        _canvas.addMatrices(_matrices[row], 0, 8 * row, 8, 0);
+    }
+
     _universe.setClockPinInverted(true);
     _universe.setLoadPinInverted(true);
-    _universe.setBrightness(1);
+    _universe.setBrightness(2);
     _universe.initialize();
 
+    _pPlayer = new MatrixPlayer(&_midiPort, &_universe, &_canvas);
 
-    _canvas.drawText("BIT     ", &ff::Fonts::fontC64, 0, 0);
-    _canvas.drawText("MATRIX  ", &ff::Fonts::fontC64, 0, 8);
-    _canvas.drawText("VERSION ", &ff::Fonts::fontC64, 0, 16);
-    _canvas.drawText("1.0     ", &ff::Fonts::fontC64, 0, 24);
-    _canvas.drawText("        ", &ff::Fonts::fontC64, 0, 32);
-    _canvas.drawText("BY      ", &ff::Fonts::fontC64, 0, 40);
-    _canvas.drawText("FRAME   ", &ff::Fonts::fontC64, 0, 48);
-    _canvas.drawText("FACTORY ", &ff::Fonts::fontC64, 0, 56);
+    _canvas.rect(0, 0, 64, 64);
+    _canvas.drawText("BIT", &ff::Fonts::fontC64, 8, 8);
+    _canvas.drawText("MATRIX", &ff::Fonts::fontC64, 8, 16);
+    _canvas.drawText("V 1.0", &ff::Fonts::fontC64, 8, 24);
+
+    _canvas.drawText("FRAME", &ff::Fonts::fontC64, 8, 40);
+    _canvas.drawText("FACTORY", &ff::Fonts::fontC64, 8, 48);
     _canvas.update();
     _universe.writeDisplay();
 
     _connectWifi();
-    _midi.begin();
+    _midiPort.begin();
     
     //float offset = _env.getFloat("TIMEZONE_OFFSET");
     //float dst = _env.getFloat("TIMEZONE_DST");
@@ -78,29 +69,20 @@ void Application::setup()
 
 void Application::loop()
 {
-    static bool isOn = false;
     //_server.handleClient();
 
-    // handle MIDI messages
-    while(!_midi.empty()) {
-        MidiMessage message = _midi.popMessage();
-        if (message.status() == MidiStatus::ControlChange && message.controller() == 7) {
-            _universe.setBrightness(message.value() / 16);
-            _universe.writeBrightness();
-        }
+    _pPlayer->update();
 
-        Serial.println(message.toString().c_str());
-    }
+    // _canvas.clear();
+    // _indexEffect.render(&_canvas, _pPlayer->timing());
+    // _linesEffect.render(&_canvas, _pPlayer->timing());
 
-    if (_comp.render()) {
-        _canvas.blit(_comp);
+    static bool isOn = false;
+    isOn = !isOn;
+    _canvas.set(0, 0, isOn);
 
-        isOn = !isOn;
-        _canvas.set(0, 0, isOn);
-
-        _canvas.update();
-        _universe.writeDisplay();
-    }
+    _canvas.update();
+    _universe.writeDisplay();
 
     delay(1);
 }

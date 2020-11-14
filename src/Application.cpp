@@ -12,15 +12,15 @@
 
 F_USE_NAMESPACE
 
-const int Application::CLOCK_PIN = 4;
-const int Application::LOAD_PIN = 16;
+const int Application::CLOCK_PINS[] = { 4, 14 };
+const int Application::LOAD_PINS[] = { 16, 27 };
 const int Application::DATA_PINS[] = { 26, 25, 33, 32, 17, 5, 18, 19 };
 const int Application::DELAY = 1;
 const int Application::ROWS = 8;
 
 Application::Application() :
     _server(80),
-    _universe(CLOCK_PIN, LOAD_PIN, DELAY),
+    _universe(CLOCK_PINS[0], LOAD_PINS[0], DELAY),
     _canvas(64, 64)
 {
 }
@@ -37,6 +37,8 @@ void Application::setup()
         _canvas.addMatrices(_matrices[row], 0, 8 * row, 8, 0);
     }
 
+    _universe.setSecondClockPin(CLOCK_PINS[1]);
+    _universe.setSecondLoadPin(LOAD_PINS[1]);
     _universe.setClockPinInverted(true);
     _universe.setLoadPinInverted(true);
     _universe.setBrightness(2);
@@ -72,10 +74,6 @@ void Application::loop()
     //_server.handleClient();
 
     _pPlayer->update();
-
-    // _canvas.clear();
-    // _indexEffect.render(&_canvas, _pPlayer->timing());
-    // _linesEffect.render(&_canvas, _pPlayer->timing());
 
     static bool isOn = false;
     isOn = !isOn;

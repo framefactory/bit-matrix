@@ -8,6 +8,7 @@
 
 #include "effects/MidiEffect.h"
 #include "effects/StaticKeyEffect.h"
+#include "effects/IndexEffect.h"
 
 #include "net/MidiController.h"
 #include "matrix/MAX7219Matrix.h"
@@ -87,7 +88,7 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
         
             Effect* pEffect = createEffect(message);
             if (pEffect) {
-                _effectMap.emplace(note, pEffect);
+                _effectMap[ch].emplace(note, pEffect);
                 _layer.add(pEffect);
                 pEffect->start(_timing);
             }
@@ -97,11 +98,11 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
         _pressedKeys[ch][note] = false;
         
         if (!_sustainEnabled[ch]) {
-            auto range = _effectMap.equal_range(note);
+            auto range = _effectMap[ch].equal_range(note);
             for (auto it = range.first; it != range.second; ++it) {
                 it->second->stop(_timing);
             }
-            _effectMap.erase(range.first, range.second);
+            _effectMap[ch].erase(range.first, range.second);
         }
     }
 
@@ -128,7 +129,7 @@ void MatrixPlayer::dispatchController(const MidiMessage& message)
         bool sustainEnabled = value >= 64;
 
         if (!sustainEnabled && _sustainEnabled[ch]) {
-            for (auto entry : _effectMap) {
+            for (auto entry : _effectMap[ch]) {
                 if (!_pressedKeys[entry.first]) {
                     entry.second->stop(_timing);
                 }
@@ -164,13 +165,30 @@ void MatrixPlayer::execSystemCommand(const MidiMessage& message)
 
     uint8_t note = message.note();
     if (note == 0) {
+        // terminate all running effects
+        for (size_t ch = 0; ch < 16; ++ch) {
+            for (auto entry : _effectMap[ch]) {
+                entry.second->stop(_timing);
+            }
+            _effectMap[ch].clear();
+        }
+        _layer.removeAll();
+
+        // initialize all matrices
         _pUniverse->initialize();
     }
     else if (note == 1) {
+        // shut down all matrices
         _pUniverse->writeRegister(MAX7219Matrix::Register::SHUTDOWN, 0x00);
     }
     else if (note >= 2 && note <= 11) {
+        // adjust brightness
         _pUniverse->setBrightness(note - 2);
         _pUniverse->writeBrightness();
+    }
+    else if (note == 12) {
+        Effect* pEffect = new IndexEffect();
+        _layer.add(pEffect);
+        pEffect->start(_timing);
     }
 }

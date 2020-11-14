@@ -4,18 +4,18 @@
  * License: MIT
  */
 
-#ifndef _ESP_BITMATRIX_INDEX_H
-#define _ESP_BITMATRIX_INDEX_H
+#ifndef _ESP_BITMATRIX_INDEXEFFECT_H
+#define _ESP_BITMATRIX_INDEXEFFECT_H
 
 #include "app.h"
 #include "effect/Effect.h"
 
 F_BEGIN_NAMESPACE
 
-class Index : public Effect
+class IndexEffect : public Effect
 {
 public:
-    Index(int offsetX = 0, int offsetY = 0, int strideX = 8, int strideY = 8);
+    IndexEffect(int offsetX = 0, int offsetY = 0, int strideX = 8, int strideY = 8);
     void onRender(Bitmap* pBitmap, const Timing& timing) override;
 
 private:
@@ -27,4 +27,4 @@ private:
 
 F_END_NAMESPACE
 
-#endif // _ESP_BITMATRIX_INDEX_H
+#endif // _ESP_BITMATRIX_INDEXEFFECT_H

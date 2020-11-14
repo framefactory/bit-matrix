@@ -56,7 +56,9 @@ private:
     bool _sustainEnabled[16];
 
     typedef std::multimap<uint8_t, Effect*> effectMap_t;
-    effectMap_t _effectMap;
+    effectMap_t _effectMap[16];
+
+    
 };
 
 F_END_NAMESPACE

@@ -16,9 +16,6 @@
 #include "matrix/MAX7219Matrix.h"
 #include "matrix/MAX7219Canvas.h"
 
-#include "effects/Index.h"
-#include "effects/Lines.h"
-
 #include "core/Environment.h"
 #include "net/BLEMidi.h"
 
@@ -27,8 +24,8 @@ F_BEGIN_NAMESPACE
 class Application
 {
 private:
-    static const int CLOCK_PIN;
-    static const int LOAD_PIN;
+    static const int CLOCK_PINS[2];
+    static const int LOAD_PINS[2];
     static const int DATA_PINS[8];
     static const int DELAY;
     static const int ROWS;
@@ -52,9 +49,6 @@ private:
     MAX7219Canvas _canvas;
 
     MatrixPlayer* _pPlayer;
-
-    //Index _indexEffect;
-    //Lines _linesEffect;
 };
 
 F_END_NAMESPACE

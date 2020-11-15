@@ -5,7 +5,7 @@ node_modules/
 built/
 doc/
 fonts/
-tools/FontConverter/fonts/
+tools/FontConverter/temp/
 
 # FILES
 .vscode/.browse.c_cpp.db*

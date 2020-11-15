@@ -10,6 +10,7 @@
 #include "effects/BigEffect.h"
 #include "effects/StaticKeyEffect.h"
 #include "effects/ParticleEffect.h"
+#include "effects/ShapeEffect.h"
 
 #include "net/MidiController.h"
 #include "matrix/MAX7219Matrix.h"
@@ -176,6 +177,8 @@ Effect* MatrixPlayer::createEffect(const MidiMessage& message)
             return new StaticKeyEffect(message);
         case 3:
             return new ParticleEffect(message);
+        case 4:
+            return new ShapeEffect(message);
     }
 
     return nullptr;

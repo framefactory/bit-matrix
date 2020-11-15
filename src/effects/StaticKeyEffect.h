@@ -8,23 +8,22 @@
 #define _ESP_BITMATRIX_STATICKEYEFFECT_H
 
 #include "../app.h"
-
-#include "effect/Effect.h"
+#include "MidiEffect.h"
 #include "net/MidiMessage.h"
 
 F_BEGIN_NAMESPACE
 
-class StaticKeyEffect : public Effect
+class StaticKeyEffect : public MidiEffect
 {
 public:
-    StaticKeyEffect(const MidiMessage& message);
-
+    StaticKeyEffect(const MidiMessage& message) :
+        MidiEffect(message) {}
+        
 protected:
     void onRender(Bitmap* pBitmap, const Timing& timing) override;
     double random();
 
 private:
-    MidiMessage _message;
     int _b8;
     int _b16;
     int _b32;

@@ -5,7 +5,7 @@
  */
 
 #include "Application.h"
-#include "fonts/Fonts.h"
+#include "Fonts.h"
 
 #include <WiFi.h>
 #include <SPIFFS.h>
@@ -88,7 +88,9 @@ void Application::loop()
             Serial.printf("[Application] free heap size: %d, largest block: %d\n",
                 heap_caps_get_free_size(MALLOC_CAP_8BIT),
                 heap_caps_get_largest_free_block(MALLOC_CAP_8BIT)
-            ); 
+            );
+            
+            heap_caps_print_heap_info(MALLOC_CAP_8BIT); 
         }
     }
     // ----- END DEBUG

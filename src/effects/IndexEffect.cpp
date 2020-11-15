@@ -5,7 +5,7 @@
  */
 
 #include "IndexEffect.h"
-#include "fonts/Fonts.h"
+#include "../Fonts.h"
 
 F_USE_NAMESPACE
 

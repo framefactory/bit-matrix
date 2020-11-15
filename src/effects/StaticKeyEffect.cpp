@@ -11,10 +11,6 @@
 
 F_USE_NAMESPACE
 
-StaticKeyEffect::StaticKeyEffect(const MidiMessage& message) :
-    _message(message)
-{
-}
 
 void StaticKeyEffect::onRender(Bitmap* pBitmap, const Timing& timing)
 {
@@ -23,8 +19,8 @@ void StaticKeyEffect::onRender(Bitmap* pBitmap, const Timing& timing)
         return;
     }
 
-    int note = _message.note();
-    int vel = _message.velocity();
+    int note = message().note();
+    int vel = message().velocity();
     int v64 = Math::limit(vel - 32, 0, 127);
     int v32 = v64 >> 1;
 

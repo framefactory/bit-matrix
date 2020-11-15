@@ -7,8 +7,7 @@
 #ifndef _ESP_BITMATRIX_MIDIEFFECT_H
 #define _ESP_BITMATRIX_MIDIEFFECT_H
 
-#include "../app.h"
-
+#include "app.h"
 #include "effect/Effect.h"
 #include "net/MidiMessage.h"
 
@@ -19,11 +18,11 @@ class MidiEffect : public Effect
 public:
     MidiEffect(const MidiMessage& message);
 
-protected:
-    void onRender(Bitmap* pBitmap, const Timing& timing) override;
+    const MidiMessage& message() const { return _message; }
 
 private:
     MidiMessage _message;
+    
 };
 
 F_END_NAMESPACE

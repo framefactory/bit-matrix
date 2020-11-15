@@ -4,8 +4,8 @@
  * License: MIT
  */
 
-#ifndef _ESP_EFFECT_MATRIXPLAYER_H
-#define _ESP_EFFECT_MATRIXPLAYER_H
+#ifndef _ESP_BITMATRIX_MATRIXPLAYER_H
+#define _ESP_BITMATRIX_MATRIXPLAYER_H
 
 #include "app.h"
 
@@ -63,4 +63,4 @@ private:
 
 F_END_NAMESPACE
 
-#endif // _ESP_EFFECT_MATRIXPLAYER_H
+#endif // _ESP_BITMATRIX_MATRIXPLAYER_H

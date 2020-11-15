@@ -43,12 +43,12 @@ void ApiServer::_handleBrightness()
 
     if (method == "up") {
         _brightness = std::min(15, _brightness + 1);
-        _pUniverse->setBrightness(_brightness);
+        _pUniverse->setMaxBrightness(_brightness);
         _server.send(200, "text/plain", "ESP32: Brightness up: " + String(_brightness));
     }
     else if (method == "down") {
         _brightness = std::max(0, _brightness - 1);
-        _pUniverse->setBrightness(_brightness);
+        _pUniverse->setMaxBrightness(_brightness);
         _server.send(200, "text/plain", "ESP32: Brightness down: " + String(_brightness));
     }
 

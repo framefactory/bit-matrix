@@ -25,7 +25,7 @@ void StaticKeyEffect::onRender(Bitmap* pBitmap, const Timing& timing)
 
     int note = _message.note();
     int vel = _message.velocity();
-    int v64 = limit(vel - 32, 0, 127);
+    int v64 = Math::limit(vel - 32, 0, 127);
     int v32 = v64 >> 1;
 
     int sx = pBitmap->width();

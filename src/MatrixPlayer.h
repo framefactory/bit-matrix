@@ -32,7 +32,7 @@ public:
 
     void update();
 
-    Timing& timing() { return _timing; }
+    const Timing& timing() const { return _timing; }
 
     virtual void onMidiMessage(const MidiMessage& message) override;
     virtual void onRPN(uint16_t param, uint16_t value) override;

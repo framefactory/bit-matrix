@@ -41,7 +41,7 @@ void Application::setup()
     _universe.setSecondLoadPin(LOAD_PINS[1]);
     _universe.setClockPinInverted(true);
     _universe.setLoadPinInverted(true);
-    _universe.setBrightness(2);
+    _universe.setMaxBrightness(2);
     _universe.initialize();
 
     _pPlayer = new MatrixPlayer(&_midiPort, &_universe, &_canvas);
@@ -75,9 +75,23 @@ void Application::loop()
 
     _pPlayer->update();
 
-    static bool isOn = false;
-    isOn = !isOn;
-    _canvas.set(0, 0, isOn);
+    // ------ BEGIN DEBUG
+    static int dotX = 0;
+    static double debugSeconds = 0.0;
+
+    if (F_DEBUG) {
+        dotX = (dotX + 1) % 8;
+        _canvas.set(dotX, 0, true);
+
+        if (_pPlayer->timing().seconds > debugSeconds) {
+            debugSeconds += 5.0;
+            Serial.printf("[Application] free heap size: %d, largest block: %d\n",
+                heap_caps_get_free_size(MALLOC_CAP_8BIT),
+                heap_caps_get_largest_free_block(MALLOC_CAP_8BIT)
+            ); 
+        }
+    }
+    // ----- END DEBUG
 
     _canvas.update();
     _universe.writeDisplay();

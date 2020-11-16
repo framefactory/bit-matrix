@@ -52,9 +52,9 @@ void MatrixPlayer::update()
 
 void MatrixPlayer::onMidiMessage(const MidiMessage& message)
 {
-    if (F_DEBUG) {
-        Serial.printf("[MatrixPlayer] - MIDI message: %s\n", message.toString().c_str());
-    }
+    // if (F_DEBUG) {
+    //     Serial.printf("[MatrixPlayer] - MIDI message: %s\n", message.toString().c_str());
+    // }
 
     if (message.isChannelMessage() && message.channel() == 0) {
         execSystemCommand(message);

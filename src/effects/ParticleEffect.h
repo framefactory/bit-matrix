@@ -8,7 +8,8 @@
 #define _ESP_BITMATRIX_PARTICLEEFFECT_H
 
 #include "../app.h"
-#include "MidiEffect.h"
+#include "../MidiEffect.h"
+
 #include "core/Particle1T.h"
 
 F_BEGIN_NAMESPACE
@@ -20,8 +21,8 @@ public:
         MidiEffect(message) {}
         
 protected:
-    void onStart(const Timing& timing) override;
-    void onRender(Bitmap* pBitmap, const Timing& timing) override;
+    void onStart(const MidiTiming& timing) override;
+    void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
     Bitmap::DrawOp calcBlinkOp(int index, float delta, float lower, float upper);
 
 private:

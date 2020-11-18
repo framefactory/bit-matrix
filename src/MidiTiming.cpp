@@ -4,11 +4,12 @@
  * License: MIT
  */
 
-#include "MidiEffect.h"
+#include "MidiTiming.h"
 
 F_USE_NAMESPACE
 
-MidiEffect::MidiEffect(const MidiMessage& message) :
-    _message(message)
+MidiTiming::MidiTiming() :
+    pitchBend(0.0f),
+    control{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }
 {
 }

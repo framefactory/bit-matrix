@@ -8,7 +8,7 @@
 
 F_USE_NAMESPACE
 
-void BigEffect::onRender(Bitmap* pBitmap, const Timing& timing)
+void BigEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
 {
     if (!isActive()) {
         setEnabled(false);

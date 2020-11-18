@@ -4,32 +4,26 @@
  * License: MIT
  */
 
-#ifndef _ESP_BITMATRIX_SHAPEEFFECT_H
-#define _ESP_BITMATRIX_SHAPEEFFECT_H
+#ifndef _ESP_BITMATRIX_ANIMATIONEFFECT_H
+#define _ESP_BITMATRIX_ANIMATIONEFFECT_H
 
 #include "../app.h"
 #include "../MidiBeatEffect.h"
 
 #include "net/MidiMessage.h"
-#include "core/Random.h"
 
 F_BEGIN_NAMESPACE
 
-class ShapeEffect : public MidiBeatEffect
+class AnimationEffect : public MidiBeatEffect
 {
 public:
-    ShapeEffect(const MidiMessage& message);
+    AnimationEffect(const MidiMessage& message) :
+        MidiBeatEffect(message) { }
 
 protected:
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
-
-    void onBeat(uint32_t index, uint32_t count) override;
-
-private:
-    Random _generator;
-    uint32_t _random[4];
 };
 
 F_END_NAMESPACE
 
-#endif // _ESP_BITMATRIX_SHAPEEFFECT_H
+#endif // _ESP_BITMATRIX_ANIMATIONEFFECT_H

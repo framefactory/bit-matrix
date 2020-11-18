@@ -12,7 +12,7 @@
 F_USE_NAMESPACE
 
 
-void StaticKeyEffect::onRender(Bitmap* pBitmap, const Timing& timing)
+void StaticKeyEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
 {
     if (!isActive()) {
         setEnabled(false);

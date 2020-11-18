@@ -8,7 +8,8 @@
 #define _ESP_BITMATRIX_STATICKEYEFFECT_H
 
 #include "../app.h"
-#include "MidiEffect.h"
+#include "../MidiEffect.h"
+
 #include "net/MidiMessage.h"
 
 F_BEGIN_NAMESPACE
@@ -20,7 +21,7 @@ public:
         MidiEffect(message) {}
         
 protected:
-    void onRender(Bitmap* pBitmap, const Timing& timing) override;
+    void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
     double random();
 
 private:

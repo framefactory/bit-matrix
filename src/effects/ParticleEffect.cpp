@@ -9,7 +9,7 @@
 
 F_USE_NAMESPACE
 
-void ParticleEffect::onStart(const Timing& timing)
+void ParticleEffect::onStart(const MidiTiming& timing)
 {
     uint8_t note = message().note();
     uint8_t vel = message().velocity();
@@ -41,7 +41,7 @@ void ParticleEffect::onStart(const Timing& timing)
 
 }
 
-void ParticleEffect::onRender(Bitmap* pBitmap, const Timing& timing)
+void ParticleEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
 {
     if (!isActive()) {
         setEnabled(false);

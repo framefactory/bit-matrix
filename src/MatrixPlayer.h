@@ -8,13 +8,13 @@
 #define _ESP_BITMATRIX_MATRIXPLAYER_H
 
 #include "app.h"
+#include "MidiEffect.h"
+#include "MidiTiming.h"
 
 #include "matrix/MAX7219Universe.h"
 
 #include "effect/Bitmap.h"
 #include "effect/Layer.h"
-#include "effect/Timing.h"
-#include "effect/Effect.h"
 
 #include "net/MidiPort.h"
 #include "net/MidiListener.h"
@@ -35,13 +35,14 @@ public:
     const Timing& timing() const { return _timing; }
 
     virtual void onMidiMessage(const MidiMessage& message) override;
+    virtual void onSysEx(const std::string& sysEx) override;
     virtual void onRPN(uint16_t param, uint16_t value) override;
     virtual void onNRPN(uint16_t param, uint16_t value) override;
 
 protected:
     void dispatchController(const MidiMessage& message);
     void dispatchNote(const MidiMessage& message);
-    Effect* createEffect(const MidiMessage& message);
+    MidiEffect* createEffect(const MidiMessage& message);
     void execSystemCommand(const MidiMessage& message);
 
 private:
@@ -50,12 +51,12 @@ private:
     Bitmap* _pTarget = nullptr;
 
     Layer _layer;
-    Timing _timing;
+    MidiTiming _timing;
 
     bool _pressedKeys[16][128];
     bool _sustainEnabled[16];
 
-    typedef std::multimap<uint8_t, Effect*> effectMap_t;
+    typedef std::multimap<uint8_t, MidiEffect*> effectMap_t;
     effectMap_t _effectMap[16];
 
     

@@ -11,6 +11,7 @@
 #include "effects/StaticKeyEffect.h"
 #include "effects/ParticleEffect.h"
 #include "effects/ShapeEffect.h"
+#include "effects/AnimationEffect.h"
 
 #include "net/MidiController.h"
 #include "matrix/MAX7219Matrix.h"
@@ -69,6 +70,33 @@ void MatrixPlayer::onMidiMessage(const MidiMessage& message)
         case MidiStatus::ControlChange:
             dispatchController(message);
             break;
+        case MidiStatus::PitchBend:
+            _timing.pitchBend = (message.data0() + (message.data1() << 7) - 0x2000) / 8192.0f;
+            break;
+    }
+}
+
+void MatrixPlayer::onSysEx(const std::string& sysEx)
+{
+    Serial.printf("[MatrixPlayer] - onSysEx, length: %d\n", sysEx.length());
+    for (auto c : sysEx) {
+        Serial.printf("%d, ", (int)c);
+    }    
+    Serial.println();
+
+    uint8_t command = sysEx[3];
+    switch(command) {
+        case 0: { // set text
+            uint8_t id = sysEx[4] % 16;
+            auto& text = _timing.text[id];
+            text.x = sysEx[5];
+            text.y = sysEx[6];
+            text.text = sysEx.substr(7);
+        } break;
+
+        case 1: { // set pixels
+            
+        } break;
     }
 }
 
@@ -95,7 +123,7 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
         if (!_pressedKeys[ch][note]) {
             _pressedKeys[ch][note] = true;
         
-            Effect* pEffect = createEffect(message);
+            MidiEffect* pEffect = createEffect(message);
             if (pEffect) {
                 _effectMap[ch].emplace(note, pEffect);
                 _layer.add(pEffect);
@@ -119,12 +147,13 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
 void MatrixPlayer::dispatchController(const MidiMessage& message)
 {
     uint8_t ch = message.channel();
+    uint8_t controller = message.controller();
     uint8_t value = message.value();
     double intPart, fracPart;
 
     switch(message.controller()) {
     case MidiController::Volume:
-        _pUniverse->setMaxBrightness(value / 12);
+        _pUniverse->setMaxBrightness(value / 8);
         _pUniverse->writeBrightness();
         break;
 
@@ -163,9 +192,13 @@ void MatrixPlayer::dispatchController(const MidiMessage& message)
         _sustainEnabled[ch] = sustainEnabled;
         break;
     }
+
+    if (controller >= MidiController::SoundController1 && controller <= MidiController::SoundController10) {
+        _timing.control[controller - MidiController::SoundController1] = value / 127.0f;
+    }
 }
 
-Effect* MatrixPlayer::createEffect(const MidiMessage& message)
+MidiEffect* MatrixPlayer::createEffect(const MidiMessage& message)
 {
     //uint8_t note = message.note();
     //uint8_t velocity = message.velocity();
@@ -179,6 +212,8 @@ Effect* MatrixPlayer::createEffect(const MidiMessage& message)
             return new ParticleEffect(message);
         case 4:
             return new ShapeEffect(message);
+        case 5:
+            return new AnimationEffect(message);
     }
 
     return nullptr;

@@ -16,10 +16,6 @@ F_BEGIN_NAMESPACE
 
 class StaticKeyEffect : public MidiEffect
 {
-public:
-    StaticKeyEffect(const MidiMessage& message) :
-        MidiEffect(message) {}
-        
 protected:
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
     double random();

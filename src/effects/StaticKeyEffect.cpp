@@ -19,8 +19,8 @@ void StaticKeyEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
         return;
     }
 
-    int note = message().note();
-    int vel = message().velocity();
+    int note = startMessage().note();
+    int vel = startMessage().velocity();
     int v64 = Math::limit(vel - 32, 0, 127);
     int v32 = v64 >> 1;
 

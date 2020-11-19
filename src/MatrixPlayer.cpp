@@ -127,7 +127,7 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
             if (pEffect) {
                 _effectMap[ch].emplace(note, pEffect);
                 _layer.add(pEffect);
-                pEffect->start(_timing);
+                pEffect->start(_timing, message);
             }
         }
     }
@@ -137,7 +137,7 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
         if (!_sustainEnabled[ch]) {
             auto range = _effectMap[ch].equal_range(note);
             for (auto it = range.first; it != range.second; ++it) {
-                it->second->stop(_timing);
+                it->second->stop(_timing, message);
             }
             _effectMap[ch].erase(range.first, range.second);
         }
@@ -180,7 +180,9 @@ void MatrixPlayer::dispatchController(const MidiMessage& message)
             auto it = _effectMap[ch].begin();
             while (it != _effectMap[ch].end()) {
                 if (!_pressedKeys[ch][it->first]) {
-                    it->second->stop(_timing);
+                    MidiMessage noteOff = it->second->startMessage();
+                    noteOff.setBytes(MidiStatus::NoteOff + noteOff.channel(), noteOff.note(), 0);
+                    it->second->stop(_timing, noteOff);
                     it = _effectMap[ch].erase(it);
                 }
                 else {
@@ -205,15 +207,15 @@ MidiEffect* MatrixPlayer::createEffect(const MidiMessage& message)
 
     switch(message.channel()) {
         case 1:
-            return new BigEffect(message);
+            return new BigEffect();
         case 2:
-            return new StaticKeyEffect(message);
+            return new StaticKeyEffect();
         case 3:
-            return new ParticleEffect(message);
+            return new ParticleEffect();
         case 4:
-            return new ShapeEffect(message);
+            return new ShapeEffect();
         case 5:
-            return new AnimationEffect(message);
+            return new AnimationEffect();
     }
 
     return nullptr;
@@ -232,7 +234,10 @@ void MatrixPlayer::execSystemCommand(const MidiMessage& message)
         // terminate all running effects
         for (size_t ch = 0; ch < 16; ++ch) {
             for (auto entry : _effectMap[ch]) {
-                entry.second->stop(_timing);
+                //MidiMessage noteOff = entry.second->startMessage();
+                //noteOff.setBytes(MidiStatus::NoteOff + noteOff.channel(), noteOff.note(), 0);
+                //entry.second->stop(_timing, noteOff);
+                entry.second->setEnabled(false);
             }
             _effectMap[ch].clear();
         }

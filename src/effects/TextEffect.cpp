@@ -16,8 +16,8 @@ void TextEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
         return;
     }
 
-    uint8_t note = message().note();
-    uint8_t vel = message().velocity();
+    //uint8_t note = message().note();
+    //uint8_t vel = message().velocity();
 
     // TODO: Implement    
 }

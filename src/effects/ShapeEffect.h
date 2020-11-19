@@ -17,10 +17,8 @@ F_BEGIN_NAMESPACE
 
 class ShapeEffect : public MidiBeatEffect
 {
-public:
-    ShapeEffect(const MidiMessage& message);
-
 protected:
+    void onStart(const MidiTiming& timing, const MidiMessage& message) override;
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
 
     void onBeat(uint32_t index, uint32_t count) override;

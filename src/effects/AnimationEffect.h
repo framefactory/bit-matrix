@@ -16,10 +16,6 @@ F_BEGIN_NAMESPACE
 
 class AnimationEffect : public MidiBeatEffect
 {
-public:
-    AnimationEffect(const MidiMessage& message) :
-        MidiBeatEffect(message) { }
-
 protected:
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
 };

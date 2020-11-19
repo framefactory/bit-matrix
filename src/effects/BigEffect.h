@@ -16,10 +16,6 @@ F_BEGIN_NAMESPACE
 
 class BigEffect : public MidiEffect
 {
-public:
-    BigEffect(const MidiMessage& message) :
-        MidiEffect(message) { }
-
 protected:
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
 };

@@ -11,10 +11,9 @@
 
 F_USE_NAMESPACE
 
-ShapeEffect::ShapeEffect(const MidiMessage& message) :
-    MidiBeatEffect(message),
-    _generator(std::rand())
+void ShapeEffect::onStart(const MidiTiming& timing, const MidiMessage& message)
 {
+    _generator.setSeed(std::rand());
 }
 
 void ShapeEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
@@ -24,8 +23,8 @@ void ShapeEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
         return;
     }
 
-    uint8_t note = message().note();
-    uint8_t vel = message().velocity();
+    uint8_t note = startMessage().note();
+    uint8_t vel = startMessage().velocity();
 
     char text[2] = { vel, 0 };
 

@@ -16,18 +16,16 @@ F_BEGIN_NAMESPACE
 
 class ParticleEffect : public MidiEffect
 {
-public:
-    ParticleEffect(const MidiMessage& message) :
-        MidiEffect(message) {}
-        
 protected:
-    void onStart(const MidiTiming& timing) override;
+    void onStart(const MidiTiming& timing, const MidiMessage& message) override;
+    void onStop(const MidiTiming& timing, const MidiMessage& message) override;
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
     Bitmap::DrawOp calcBlinkOp(int index, float delta, float lower, float upper);
 
 private:
     Particle1f _particles[64];
     float _rate[64];
+    double _releaseEnd = 0.0;
 };
 
 F_END_NAMESPACE

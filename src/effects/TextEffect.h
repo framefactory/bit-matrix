@@ -14,10 +14,6 @@ F_BEGIN_NAMESPACE
 
 class TextEffect : public MidiBeatEffect
 {
-public:
-    TextEffect(const MidiMessage& message) :
-        MidiBeatEffect(message) { }
-
 protected:
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
 };

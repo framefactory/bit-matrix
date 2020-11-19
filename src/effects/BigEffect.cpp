@@ -15,7 +15,7 @@ void BigEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
         return;
     }
 
-    uint8_t note = message().note() % 64;
+    uint8_t note = startMessage().note() % 64;
     int col = note / 8;
     int row = note % 8;
 

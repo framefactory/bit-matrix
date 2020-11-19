@@ -8,12 +8,6 @@
 
 F_USE_NAMESPACE
 
-MidiBeatEffect::MidiBeatEffect(const MidiMessage& message) :
-    MidiEffect(message),
-    _count{ 0, 0, 0, 0 }
-{
-}
-
 void MidiBeatEffect::dispatchBeats(const MidiTiming& timing)
 {
     uint32_t count[8] {

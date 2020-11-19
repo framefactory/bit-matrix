@@ -16,8 +16,8 @@ void AnimationEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
         return;
     }
 
-    uint8_t note = message().note();
-    uint8_t vel = message().velocity();
+    uint8_t note = startMessage().note();
+    uint8_t vel = startMessage().velocity();
     
     int row = note / 8;
     int col = note % 8;

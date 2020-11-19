@@ -14,16 +14,13 @@ F_BEGIN_NAMESPACE
 
 class MidiBeatEffect : public MidiEffect
 {
-public:
-    MidiBeatEffect(const MidiMessage& message);
-
 protected:
     void dispatchBeats(const MidiTiming& timing);
 
     virtual void onBeat(uint32_t index, uint32_t count) {};
 
 private:
-    uint32_t _count[4];
+    uint32_t _count[4] { 0, 0, 0, 0 };
 };
 
 F_END_NAMESPACE

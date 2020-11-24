@@ -31,6 +31,7 @@ public:
     virtual ~MatrixPlayer();
 
     void update();
+    void runTestPattern(int pattern);
 
     const Timing& timing() const { return _timing; }
 
@@ -58,8 +59,6 @@ private:
 
     typedef std::multimap<uint8_t, MidiEffect*> effectMap_t;
     effectMap_t _effectMap[16];
-
-    
 };
 
 F_END_NAMESPACE

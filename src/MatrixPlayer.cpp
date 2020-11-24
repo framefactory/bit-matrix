@@ -6,7 +6,7 @@
 
 #include "MatrixPlayer.h"
 
-#include "effects/IndexEffect.h"
+#include "effects/TestPatternEffect.h"
 #include "effects/BigEffect.h"
 #include "effects/StaticKeyEffect.h"
 #include "effects/ParticleEffect.h"
@@ -56,11 +56,6 @@ void MatrixPlayer::onMidiMessage(const MidiMessage& message)
     // if (F_DEBUG) {
     //     Serial.printf("[MatrixPlayer] - MIDI message: %s\n", message.toString().c_str());
     // }
-
-    if (message.isChannelMessage() && message.channel() == 0) {
-        execSystemCommand(message);
-        return;
-    }
 
     switch(message.status()) {
         case MidiStatus::NoteOn:
@@ -118,6 +113,11 @@ void MatrixPlayer::dispatchNote(const MidiMessage& message)
 {
     uint8_t ch = message.channel();
     uint8_t note = message.note();
+
+    if (ch == 0) {
+        execSystemCommand(message);
+        return;
+    }
 
     if (message.status() == MidiStatus::NoteOn && message.velocity() > 0) {
         if (!_pressedKeys[ch][note]) {
@@ -253,10 +253,20 @@ void MatrixPlayer::execSystemCommand(const MidiMessage& message)
         break;
 
     case 2:
-        // play test pattern
-        Effect* pEffect = new IndexEffect();
-        _layer.add(pEffect);
-        pEffect->start(_timing);
+        runTestPattern(0);
+        break;
+    case 3:
+        runTestPattern(1);
+        break;
+    case 4:
+        runTestPattern(2);
         break;
     }
+}
+
+void MatrixPlayer::runTestPattern(int pattern)
+{
+    Effect* pTestPattern = new TestPatternEffect(pattern);
+    _layer.add(pTestPattern);
+    pTestPattern->start(_timing);
 }

@@ -14,7 +14,7 @@ F_USE_NAMESPACE
 
 const int Application::CLOCK_PINS[] = { 4, 14 };
 const int Application::LOAD_PINS[] = { 16, 27 };
-const int Application::DATA_PINS[] = { 26, 25, 33, 32, 17, 5, 18, 19 };
+const int Application::DATA_PINS[] = { 32, 33, 25, 26, 17, 5, 18, 19 };
 const int Application::DELAY = 1;
 const int Application::ROWS = 8;
 
@@ -64,9 +64,12 @@ void Application::setup()
     //_comp.fetchRealTime(offset, dst);
     //_server.initialize(&_universe);
 
-    delay(2000);
+    //delay(2000);
     _canvas.clear();
     _universe.initialize();
+
+    _universe.setMaxBrightness(0);
+    _pPlayer->runTestPattern(0);
 }
 
 void Application::loop()

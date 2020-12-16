@@ -29,17 +29,17 @@ void StaticKeyEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
     int sy = pBitmap->height();
     int cy = sy >> 1;
 
-    int b8 = timing.beat(8.0);
+    int b8 = timing.beatCount(8.0);
     if (b8 != _b8) {
         _b8 = b8;
         _r8 = random();
     }
-    int b16 = timing.beat(16.0);
+    int b16 = timing.beatCount(16.0);
     if (b16 != _b16) {
         _b16 = b16;
         _r16 = random();
     }
-    int b32 = timing.beat(32.0);
+    int b32 = timing.beatCount(32.0);
     if (b32 != _b32) {
         _b32 = b32;
         _r32 = random();

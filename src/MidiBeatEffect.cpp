@@ -10,11 +10,11 @@ F_USE_NAMESPACE
 
 void MidiBeatEffect::dispatchBeats(const MidiTiming& timing)
 {
-    uint32_t count[8] {
-        timing.beat(4.0),
-        timing.beat(8.0),
-        timing.beat(16.0),
-        timing.beat(32.0)
+    uint32_t count[4] {
+        timing.beatCount(4.0),
+        timing.beatCount(8.0),
+        timing.beatCount(16.0),
+        timing.beatCount(32.0)
     };
 
     for (uint32_t i = 0; i < 4; ++i) {

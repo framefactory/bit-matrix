@@ -23,8 +23,11 @@ struct MidiTiming : public Timing
 
     MidiTiming();
 
+    /// Pitch bend value
     float pitchBend;
+    /// Controller values
     float control[10];
+    /// Text stores
     text_t text[16];
 };
 

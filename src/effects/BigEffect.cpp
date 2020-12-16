@@ -19,7 +19,7 @@ void BigEffect::onRender(Bitmap* pBitmap, const MidiTiming& timing)
     int col = note / 8;
     int row = note % 8;
 
-    uint32_t tic = timing.beat(16.0) % 14;
+    uint32_t tic = timing.beatCount(16.0) % 14;
     uint32_t pos = tic < 8 ? tic : 14 - tic;
     pBitmap->fill(row * 8, col * 8 + pos, 8, 1);
 }

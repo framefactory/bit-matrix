@@ -18,6 +18,9 @@ class AnimationEffect : public MidiBeatEffect
 {
 protected:
     void onRender(Bitmap* pBitmap, const MidiTiming& timing) override;
+
+private:
+    void animateCell(Bitmap* pBitmap, const MidiTiming& timing, uint8_t index, uint8_t pattern);
 };
 
 F_END_NAMESPACE

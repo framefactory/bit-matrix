@@ -12,9 +12,10 @@
 
 F_USE_NAMESPACE
 
-const int Application::CLOCK_PINS[] = { 4, 14 };
-const int Application::LOAD_PINS[] = { 16, 27 };
-const int Application::DATA_PINS[] = { 32, 33, 25, 26, 17, 5, 18, 19 };
+const int Application::CLOCK_PINS[] = { 13, 33 };
+const int Application::LOAD_PINS[] = { 12, 32 };
+//const int Application::DATA_PINS[] = { 25, 26, 27, 14, 5, 17, 16, 4 };
+const int Application::DATA_PINS[] = { 25, 26, 17, 14, 5, 27, 16, 4 };
 const int Application::DELAY = 1;
 const int Application::ROWS = 8;
 
@@ -41,7 +42,7 @@ void Application::setup()
     _universe.setSecondLoadPin(LOAD_PINS[1]);
     _universe.setClockPinInverted(true);
     _universe.setLoadPinInverted(true);
-    _universe.setMaxBrightness(2);
+    _universe.setMaxBrightness(1);
     _universe.initialize();
 
     _pPlayer = new MatrixPlayer(&_midiPort, &_universe, &_canvas);
@@ -56,7 +57,7 @@ void Application::setup()
     _canvas.update();
     _universe.writeDisplay();
 
-    _connectWifi();
+    //_connectWifi();
     _midiPort.begin();
     
     //float offset = _env.getFloat("TIMEZONE_OFFSET");
@@ -64,12 +65,14 @@ void Application::setup()
     //_comp.fetchRealTime(offset, dst);
     //_server.initialize(&_universe);
 
-    //delay(2000);
+    delay(2000);
     _canvas.clear();
     _universe.initialize();
 
-    _universe.setMaxBrightness(0);
-    _pPlayer->runTestPattern(0);
+    if (F_DEBUG) {
+        //_universe.setMaxBrightness(0);
+        //_pPlayer->runTestPattern(0);
+    }
 }
 
 void Application::loop()
